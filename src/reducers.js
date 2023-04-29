@@ -1,4 +1,7 @@
-const s10chLocalStorageKey = "s10ch";
+import  {NOT_EKLE } from "./actions";
+import  {NOT_SIL } from "./actions";
+
+const s10chLocalStorageKey = "s10ch0323";
 
 const baslangicDegerleri = {
   notlar: [
@@ -20,10 +23,37 @@ function localStorageStateOku(key) {
 
 function baslangicNotlariniGetir(key) {
   const eskiNotlar = localStorage.getItem(key);
-
+  
   if (eskiNotlar) {
     return localStorageStateOku(key);
   } else {
-    return baslangicDegerleri
+    localStorageStateYaz(key, baslangicDegerleri)
+    return baslangicDegerleri;
   }
 }
+
+    function reducer(
+    state=baslangicNotlariniGetir(s10chLocalStorageKey),
+     action
+     ){
+  switch(action.type){
+    case NOT_EKLE:
+    const yeniNotlar =[action.payload, ...state.notlar];
+    const newState= { ...state, notlar:yeniNotlar};
+    localStorageStateYaz(s10chLocalStorageKey, newState);
+    return newState;
+
+    case NOT_SIL: 
+    const notId= action.payload;
+    const yeniNotlar2= state.notlar.filter((not)=>not.id === notId);
+    const newState2= { ...state, notlar: yeniNotlar2};
+    localStorageStateYaz(s10chLocalStorageKey, newState2);
+    return newState2;
+
+    default:
+      return state;
+
+      
+  }
+  }
+export default reducer;
